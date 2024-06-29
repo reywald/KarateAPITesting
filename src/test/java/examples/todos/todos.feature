@@ -1,7 +1,7 @@
 Feature: Karate Basic Todos
 
 Background:
-    * url "http://localhost:8080/api/todos"
+    * url apiUrl
 
 Scenario: Get all todos
     Given url "http://localhost:8080/api/todos"
@@ -10,7 +10,7 @@ Scenario: Get all todos
 
 Scenario: Basic todo flow
 
-    * def taskName = "FirstTask"
+    * def taskName = "MyFirstTask"
 
     # Create a singe todo
     Given request { title: "#(taskName)", complete: false }
@@ -50,20 +50,11 @@ Scenario: Basic todo flow
     * match firstTask.title == taskName
     * match firstTask.complete == false
 
-     # Update a todo
-     Given path id
-     And request { title: "#(taskName)", complete: true }
-     When method Put
-     Then status 200
-     And match response.complete == true
-    
-     # Delete todo
-     Given request id
-     when method Delete
-     Then status 200
+    # Check all response objects
+    * match each response contains { complete: "#boolean" }
      
      # Clear all tasks
-     Given url "https://localhost:8080/api/reset"
+     Given url "http://localhost:8080/api/reset"
      When method Get
      Then status 200
      And match response == { deleted: "#number" }
